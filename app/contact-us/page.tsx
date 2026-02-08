@@ -87,7 +87,7 @@ export default function ContactUsPage() {
             {/* Contact Form */}
             <div className="bg-white rounded-xl shadow-lg p-5 sm:p-8">
               <h3 className="text-xl font-semibold mb-6 text-gray-800">
-                Please share your feedback
+                Please share your feedback / queries
               </h3>
 
               <form onSubmit={handleSubmit} className="space-y-4">
