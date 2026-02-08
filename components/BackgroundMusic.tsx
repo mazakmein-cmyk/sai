@@ -9,9 +9,6 @@ export default function BackgroundMusic() {
     const audioRef = useRef<HTMLAudioElement | null>(null)
 
     useEffect(() => {
-        // We rely on the <audio autoPlay muted> tags for the initial start.
-        // This is the most reliable way in 2024.
-        // We simply check if it started and update state.
         const audio = audioRef.current
         if (!audio) return
 
@@ -21,21 +18,20 @@ export default function BackgroundMusic() {
         audio.addEventListener('play', onPlay)
         audio.addEventListener('pause', onPause)
 
-        // Attempt to verify playback status after a brief moment
-        const checkPlayback = setTimeout(() => {
-            if (audio.paused) {
-                // If it failed to autoplay, try one last gentle nudge (muted)
-                audio.muted = true
-                audio.play().catch(e => console.warn("Autoplay blocked:", e))
-            }
-        }, 1000)
+        // IMMEDIATE CHECK: Sync state in case autoPlay already started it
+        if (!audio.paused) {
+            setPlaying(true)
+        } else {
+            // Force play attempt if not playing
+            audio.muted = true
+            audio.play().catch(e => console.error("Initial play failed", e))
+        }
 
         // Global unlock listener (Unmute on first touch)
         const unlockAudio = () => {
             if (audio) {
                 audio.muted = false
                 setMuted(false)
-                // If it wasn't playing (e.g. strict block), play now
                 if (audio.paused) {
                     audio.play().catch(e => console.error("Unlock play failed", e))
                 }
@@ -49,7 +45,6 @@ export default function BackgroundMusic() {
             audio.removeEventListener('play', onPlay)
             audio.removeEventListener('pause', onPause)
             events.forEach(e => window.removeEventListener(e, unlockAudio))
-            clearTimeout(checkPlayback)
         }
     }, [])
 
