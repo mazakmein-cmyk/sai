@@ -41,20 +41,22 @@ export default function BackgroundMusic() {
 
     return (
         <>
-            {/* YouTube player must not be display: none or it will stop playing. We position it off-screen. */}
-            <div style={{ position: 'fixed', top: '-9999px', left: '-9999px', opacity: 0, pointerEvents: 'none' }}>
+            {/* DEBUG MODE: Player visible to check if it loads */}
+            <div style={{ position: 'fixed', bottom: '80px', right: '20px', zIndex: 40, border: '2px solid red', background: 'black' }}>
+                <p className="text-white text-xs p-1">Debug: {playing ? 'Playing' : 'Paused'} | Muted: {muted ? 'Yes' : 'No'}</p>
                 <ReactPlayer
                     url="https://youtu.be/QKf_JPbN6Lw?si=O-4-_YhzwMMkczR0"
                     playing={playing}
                     loop={true}
                     volume={0.5}
                     muted={muted}
-                    width="1px"
-                    height="1px"
+                    width="200px"
+                    height="115px"
                     onStart={() => console.log('Audio started')}
                     onPlay={() => setPlaying(true)}
                     onPause={() => setPlaying(false)}
                     onError={(e: any) => console.error('Audio error:', e)}
+                    controls={true}
                 />
             </div>
 
