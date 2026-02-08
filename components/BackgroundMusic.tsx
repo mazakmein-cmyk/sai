@@ -1,36 +1,82 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { FaMusic, FaPause } from 'react-icons/fa'
 
 export default function BackgroundMusic() {
-    const [playing, setPlaying] = useState(true)
+    const [playing, setPlaying] = useState(false)
+    const [muted, setMuted] = useState(true) // Start muted for autoplay
+    const [hasInteracted, setHasInteracted] = useState(false)
+    const audioRef = useRef<HTMLAudioElement | null>(null)
+
+    useEffect(() => {
+        // Attempt autoplay on mount
+        const audio = audioRef.current
+        if (audio) {
+            audio.volume = 0.5
+            audio.muted = true // Start muted
+
+            const startAudio = async () => {
+                try {
+                    await audio.play()
+                    setPlaying(true)
+                } catch (err) {
+                    console.error("Autoplay failed:", err)
+                    setPlaying(false)
+                }
+            }
+            startAudio()
+        }
+
+        // Interaction listener to unmute
+        const handleInteraction = () => {
+            if (!hasInteracted && audio) {
+                setHasInteracted(true)
+                audio.muted = false
+                setMuted(false)
+
+                // If not playing, try to play again
+                if (audio.paused) {
+                    audio.play().catch(e => console.error("Play failed:", e))
+                    setPlaying(true)
+                }
+            }
+        }
+
+        const events = ['click', 'touchstart', 'keydown', 'scroll']
+        events.forEach(event => window.addEventListener(event, handleInteraction, { once: true }))
+
+        return () => {
+            events.forEach(event => window.removeEventListener(event, handleInteraction))
+        }
+    }, [hasInteracted])
 
     const togglePlay = () => {
-        setPlaying(!playing)
+        const audio = audioRef.current
+        if (!audio) return
+
+        if (playing) {
+            audio.pause()
+            setPlaying(false)
+        } else {
+            audio.play().catch(e => console.error("Toggle play failed:", e))
+            setPlaying(true)
+            if (muted) {
+                audio.muted = false
+                setMuted(false)
+            }
+        }
     }
 
     return (
         <>
-            {/* 
-                Forcing Unmuted Autoplay 
-                Note: Most browsers will BLOCK this unless the user has interacted with the domain before.
-                We use a raw iframe to try and bypass library restrictions.
-            */}
-            <div style={{ position: 'fixed', top: '-9999px', left: '-9999px', opacity: 0, pointerEvents: 'none' }}>
-                {playing && (
-                    <iframe
-                        width="560"
-                        height="315"
-                        src="https://www.youtube.com/embed/FetQQNJHngg?start=14&autoplay=1&mute=0&loop=1&playlist=FetQQNJHngg&controls=0"
-                        title="YouTube video player"
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        referrerPolicy="strict-origin-when-cross-origin"
-                        allowFullScreen
-                    ></iframe>
-                )}
-            </div>
+            <audio
+                ref={audioRef}
+                src="/background-music.mp3"
+                loop
+                preload="auto"
+                className="hidden"
+            />
 
             <button
                 onClick={togglePlay}
