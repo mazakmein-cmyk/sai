@@ -1,11 +1,13 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { FaMusic, FaPause } from 'react-icons/fa'
+import { FaMusic, FaPause, FaHandsPraying } from 'react-icons/fa6'
 
 export default function BackgroundMusic() {
     const [playing, setPlaying] = useState(false)
     const [muted, setMuted] = useState(true)
+    const [showSplash, setShowSplash] = useState(true)
+    const [fadeOut, setFadeOut] = useState(false)
     const audioRef = useRef<HTMLAudioElement | null>(null)
 
     useEffect(() => {
@@ -18,52 +20,45 @@ export default function BackgroundMusic() {
         audio.addEventListener('play', onPlay)
         audio.addEventListener('pause', onPause)
 
-        // IMMEDIATE CHECK: Sync state in case autoPlay already started it
-        if (!audio.paused) {
-            setPlaying(true)
-        } else {
-            // Force play attempt if not playing
-            audio.muted = true
-            audio.play().catch(e => console.error("Initial play failed", e))
-        }
-
-        // Global unlock listener
-        const unlockAudio = () => {
-            if (audio) {
-                // Try to unmute
-                audio.muted = false
-                setMuted(false)
-
-                // If paused, try to play. 
-                if (audio.paused) {
-                    const playPromise = audio.play();
-                    if (playPromise !== undefined) {
-                        playPromise.then(() => {
-                            setPlaying(true)
-                        })
-                            .catch(error => {
-                                console.error("Unmuted play blocked:", error)
-                                // Auto-play policy blocked unmuted play. 
-                                // Fallback: Play Muted (so at least it plays)
-                                audio.muted = true
-                                setMuted(true)
-                                audio.play().then(() => setPlaying(true)).catch(e => console.error("Muted play also failed", e))
-                            });
-                    }
-                }
+        // Auto-dismiss splash after 8 seconds if no interaction
+        const timer = setTimeout(() => {
+            if (showSplash) {
+                handleAutoDismiss()
             }
-        }
-
-        // We use capture: true to catch events early
-        const events = ['click', 'touchstart', 'scroll', 'keydown']
-        events.forEach(e => document.addEventListener(e, unlockAudio, { once: true, capture: true }))
+        }, 8000)
 
         return () => {
             audio.removeEventListener('play', onPlay)
             audio.removeEventListener('pause', onPause)
-            events.forEach(e => document.removeEventListener(e, unlockAudio, { capture: true }))
+            clearTimeout(timer)
         }
-    }, [])
+    }, [showSplash])
+
+    const handleEnter = () => {
+        const audio = audioRef.current
+        if (audio) {
+            setFadeOut(true)
+            setTimeout(() => setShowSplash(false), 500) // Allow fade out animation
+
+            // USER INTERACTION -> UNMUTE & PLAY
+            audio.muted = false
+            setMuted(false)
+            audio.play().then(() => setPlaying(true)).catch(e => console.error("Enter play failed", e))
+        }
+    }
+
+    const handleAutoDismiss = () => {
+        setFadeOut(true)
+        setTimeout(() => setShowSplash(false), 500)
+
+        // NO INTERACTION -> PLAY MUTED (Fallback)
+        const audio = audioRef.current
+        if (audio && audio.paused) {
+            audio.muted = true
+            setMuted(true)
+            audio.play().then(() => setPlaying(true)).catch(e => console.error("Auto-dismiss play failed", e))
+        }
+    }
 
     const togglePlay = () => {
         const audio = audioRef.current
@@ -80,16 +75,35 @@ export default function BackgroundMusic() {
 
     return (
         <>
-            {/* 
-                Hidden with opacity/size instead of display:none to prevent browser throttling.
-                autoPlay + muted + loop is the gold standard for background audio.
-            */}
+            {/* SPLASH SCREEN OVERLAY */}
+            {showSplash && (
+                <div
+                    className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/90 backdrop-blur-sm transition-opacity duration-500 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}
+                >
+                    <div className="text-center space-y-6 p-6 animate-in fade-in zoom-in duration-500">
+                        <h1 className="text-3xl md:text-5xl font-bold text-saffron-500 drop-shadow-lg">
+                            Shri Shirdi Sai Baba Temple
+                        </h1>
+                        <button
+                            onClick={handleEnter}
+                            className="group relative inline-flex items-center justify-center px-8 py-3 text-lg font-medium text-white bg-saffron-600 rounded-full overflow-hidden transition-all duration-300 hover:bg-saffron-700 hover:scale-105 hover:shadow-[0_0_20px_rgba(234,88,12,0.5)] focus:outline-none focus:ring-2 focus:ring-saffron-400 focus:ring-offset-2 focus:ring-offset-black"
+                        >
+                            <span className="relative z-10 flex items-center gap-2">
+                                <span>Om Sai Ram</span>
+                                <FaHandsPraying className="w-4 h-4 animate-bounce" />
+                            </span>
+                        </button>
+                        <p className="text-white/40 text-xs mt-4">
+                            Click to enter
+                        </p>
+                    </div>
+                </div>
+            )}
+
             <audio
                 ref={audioRef}
                 src="/background-music.mp3"
                 loop
-                autoPlay
-                muted
                 playsInline
                 style={{
                     position: 'absolute',
@@ -100,7 +114,6 @@ export default function BackgroundMusic() {
                     overflow: 'hidden',
                     clip: 'rect(0,0,0,0)',
                     border: 0,
-                    // visibility: 'hidden' is safer than opacity for some browsers
                     visibility: 'hidden'
                 }}
             />
