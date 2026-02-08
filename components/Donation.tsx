@@ -4,16 +4,20 @@ import { useState } from 'react'
 import { HiBanknotes } from 'react-icons/hi2'
 import { FiCopy, FiCheck } from 'react-icons/fi'
 import { SITE_CONFIG } from '@/lib/constants'
+import Toast from './Toast'
 
 export default function Donation() {
   const bankDetails = SITE_CONFIG.bankDetails
   const [copiedField, setCopiedField] = useState<string | null>(null)
+  const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState('')
 
   const copyToClipboard = (text: string, field: string) => {
     navigator.clipboard.writeText(text)
     setCopiedField(field)
+    setToastMessage(`Copied ${field}: ${text}`)
+    setShowToast(true)
     setTimeout(() => setCopiedField(null), 2000)
-    // Removed alert to be less intrusive, visual feedback via icon change/toast is better
   }
 
   const CopyButton = ({ text, field }: { text: string; field: string }) => (
@@ -33,6 +37,11 @@ export default function Donation() {
 
   return (
     <section id="donation" className="section-padding bg-white">
+      <Toast
+        message={toastMessage}
+        isVisible={showToast}
+        onClose={() => setShowToast(false)}
+      />
       <div className="container-custom">
         <div className="max-w-3xl mx-auto">
           <h2 className="heading-secondary text-center mb-4">

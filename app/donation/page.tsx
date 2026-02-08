@@ -4,14 +4,19 @@ import { useState } from 'react'
 import { HiBanknotes, HiCheckCircle } from 'react-icons/hi2'
 import { FiCopy, FiCheck } from 'react-icons/fi'
 import { SITE_CONFIG } from '@/lib/constants'
+import Toast from '@/components/Toast'
 
 export default function DonationPage() {
   const bankDetails = SITE_CONFIG.bankDetails
   const [copiedField, setCopiedField] = useState<string | null>(null)
+  const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState('')
 
   const copyToClipboard = (text: string, field: string) => {
     navigator.clipboard.writeText(text)
     setCopiedField(field)
+    setToastMessage(`Copied ${field}: ${text}`)
+    setShowToast(true)
     setTimeout(() => setCopiedField(null), 2000)
   }
 
@@ -32,6 +37,11 @@ export default function DonationPage() {
 
   return (
     <div className="pt-24 pb-16">
+      <Toast
+        message={toastMessage}
+        isVisible={showToast}
+        onClose={() => setShowToast(false)}
+      />
       <div className="container-custom section-padding">
         <div className="max-w-4xl mx-auto">
           {/* Page Header */}
