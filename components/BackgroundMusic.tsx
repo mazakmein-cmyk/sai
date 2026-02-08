@@ -1,46 +1,69 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import { FaMusic, FaPause } from 'react-icons/fa'
 
-export default function BackgroundMusic() {
-    // We can't easily control the raw iframe playing state without the API, 
-    // but we can toggle visibility/existence or mute state if we had access.
-    // For now, let's just focus on getting it to PLAY.
-    // The toggle button will just be visual for now until we confirm it plays.
+// Dynamically import ReactPlayer to avoid hydration issues
+const ReactPlayer = dynamic(() => import('react-player'), { ssr: false }) as any
 
-    // Actually, we can use a simple state to mount/unmount or hide/show the iframe to "pause" it.
+export default function BackgroundMusic() {
     const [playing, setPlaying] = useState(true)
-    const [muted, setMuted] = useState(true) // Start muted
+    const [muted, setMuted] = useState(true) // Start muted to allow autoplay
+    const [hasInteracted, setHasInteracted] = useState(false)
+
+    // Handle user interaction to enable audio if autoplay is blocked
+    useEffect(() => {
+        const handleInteraction = () => {
+            if (!hasInteracted) {
+                setHasInteracted(true)
+                setMuted(false) // Unmute on first interaction
+                setPlaying(true) // Ensure playing
+            }
+        }
+
+        const events = ['click', 'touchstart', 'keydown', 'scroll']
+        events.forEach(event => window.addEventListener(event, handleInteraction, { once: true }))
+
+        return () => {
+            events.forEach(event => window.removeEventListener(event, handleInteraction))
+        }
+    }, [hasInteracted])
 
     const togglePlay = () => {
         setPlaying(!playing)
-        // If we are un-pausing, we should also unmute
-        if (!playing) setPlaying(true)
+        // If they click the button, definitely unmute
+        if (muted) setMuted(false)
     }
 
     return (
         <>
-            {/* DEBUG MODE: RAW IFRAME */}
-            <div style={{ position: 'fixed', bottom: '80px', right: '20px', zIndex: 40, border: '2px solid red', background: 'black' }}>
-                <p className="text-white text-xs p-1">Debug: Raw Iframe Mode</p>
-                {/* 
-                    Using the exact embed URL provided by user, plus autoplay parameters.
-                    We add 'controls=1' so user can manually play if needed.
-                */}
-                {playing && (
-                    <iframe
-                        width="200"
-                        height="115"
-                        src={`https://www.youtube.com/embed/FetQQNJHngg?autoplay=1&mute=1&loop=1&playlist=FetQQNJHngg&controls=1`}
-                        title="YouTube video player"
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        referrerPolicy="strict-origin-when-cross-origin"
-                        allowFullScreen
-                    ></iframe>
-                )}
-                {!playing && <div className="w-[200px] h-[115px] flex items-center justify-center text-white">Paused</div>}
+            {/* Player hidden off-screen but active */}
+            <div style={{ position: 'fixed', top: '-9999px', left: '-9999px', opacity: 0, pointerEvents: 'none' }}>
+                <ReactPlayer
+                    url="https://www.youtube.com/embed/FetQQNJHngg?si=JgDu4O1hkE8iKSDs"
+                    playing={playing}
+                    loop={true}
+                    volume={0.5}
+                    muted={muted}
+                    width="200px"
+                    height="115px"
+                    onStart={() => console.log('Audio started')}
+                    onPlay={() => setPlaying(true)}
+                    onPause={() => setPlaying(false)}
+                    onError={(e: any) => console.error('Audio error:', e)}
+                    controls={false} // Hide native controls
+                    config={{
+                        youtube: {
+                            playerVars: {
+                                showinfo: 0,
+                                autoplay: 1,
+                                playsinline: 1,
+                                origin: typeof window !== 'undefined' ? window.location.origin : undefined
+                            }
+                        }
+                    }}
+                />
             </div>
 
             <button
