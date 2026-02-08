@@ -5,54 +5,66 @@ import { FaMusic, FaPause } from 'react-icons/fa'
 
 export default function BackgroundMusic() {
     const [playing, setPlaying] = useState(false)
-    const [muted, setMuted] = useState(true) // Start muted for autoplay
-    const [hasInteracted, setHasInteracted] = useState(false)
-    const audioRef = useRef<HTMLAudioElement | null>(null)
+    const [muted, setMuted] = useState(true)
+    const ऑडियोRef = useRef<HTMLAudioElement | null>(null) // Using unique var name to avoid conflicts
 
+    // Attempt to play immediately on mount
     useEffect(() => {
-        // Attempt autoplay on mount
-        const audio = audioRef.current
-        if (audio) {
-            audio.volume = 0.5
-            audio.muted = true // Start muted
+        const audio = ऑडियोRef.current
+        if (!audio) return
 
-            const startAudio = async () => {
+        // Volume set to 50%
+        audio.volume = 0.5
+
+        const tryPlay = async () => {
+            try {
+                // FIRST ATTEMPT: Play Unmuted (User preference)
+                audio.muted = false
+                await audio.play()
+
+                // If successful, update state
+                setPlaying(true)
+                setMuted(false)
+                console.log("Success: Audio playing unmuted.")
+            } catch (err) {
+                console.log("Autoplay unmuted blocked. Retrying muted.", err)
+
+                // SECOND ATTEMPT: Play Muted (Browser fallback)
+                audio.muted = true
                 try {
                     await audio.play()
                     setPlaying(true)
-                } catch (err) {
-                    console.error("Autoplay failed:", err)
+                    setMuted(true)
+                    console.log("Success: Audio playing muted.")
+                } catch (err2) {
+                    console.error("Autoplay completely blocked:", err2)
                     setPlaying(false)
                 }
             }
-            startAudio()
         }
 
-        // Interaction listener to unmute
-        const handleInteraction = () => {
-            if (!hasInteracted && audio) {
-                setHasInteracted(true)
-                audio.muted = false
-                setMuted(false)
+        tryPlay()
 
-                // If not playing, try to play again
-                if (audio.paused) {
-                    audio.play().catch(e => console.error("Play failed:", e))
-                    setPlaying(true)
-                }
+        // Interaction listener to unmute if needed
+        const unMuteOnInteraction = () => {
+            if (audio.muted || audio.paused) {
+                audio.muted = false
+                audio.play().catch(e => console.error("Interaction play failed:", e))
+                setMuted(false)
+                setPlaying(true)
             }
         }
 
         const events = ['click', 'touchstart', 'keydown', 'scroll']
-        events.forEach(event => window.addEventListener(event, handleInteraction, { once: true }))
+        events.forEach(event => window.addEventListener(event, unMuteOnInteraction, { once: true }))
 
         return () => {
-            events.forEach(event => window.removeEventListener(event, handleInteraction))
+            events.forEach(event => window.removeEventListener(event, unMuteOnInteraction))
         }
-    }, [hasInteracted])
+    }, [])
 
     const togglePlay = () => {
-        const audio = audioRef.current
+        const audio = ऑडियोRef.current
         if (!audio) return
 
         if (playing) {
@@ -71,7 +83,7 @@ export default function BackgroundMusic() {
     return (
         <>
             <audio
-                ref={audioRef}
+                ref={ऑडियोRef}
                 src="/background-music.mp3"
                 loop
                 preload="auto"
