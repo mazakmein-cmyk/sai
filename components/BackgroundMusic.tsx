@@ -45,7 +45,7 @@ export default function BackgroundMusic() {
             <div style={{ position: 'fixed', bottom: '80px', right: '20px', zIndex: 40, border: '2px solid red', background: 'black' }}>
                 <p className="text-white text-xs p-1">Debug: {playing ? 'Playing' : 'Paused'} | Muted: {muted ? 'Yes' : 'No'}</p>
                 <ReactPlayer
-                    url="https://youtu.be/FetQQNJHngg?si=THv4WsbCvQp-gbNo"
+                    url="https://www.youtube.com/watch?v=FetQQNJHngg"
                     playing={playing}
                     loop={true}
                     volume={0.5}
@@ -57,6 +57,11 @@ export default function BackgroundMusic() {
                     onPause={() => setPlaying(false)}
                     onError={(e: any) => console.error('Audio error:', e)}
                     controls={true}
+                    config={{
+                        youtube: {
+                            playerVars: { showinfo: 1, autoplay: 1, playsinline: 1 }
+                        }
+                    }}
                 />
             </div>
 
