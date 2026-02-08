@@ -10,7 +10,7 @@ const ReactPlayer = dynamic(() => import('react-player'), { ssr: false }) as any
 
 export default function BackgroundMusic() {
     const [playing, setPlaying] = useState(true)
-    const [muted] = useState(false)
+    const [muted, setMuted] = useState(true) // Start muted to allow autoplay
     const [hasInteracted, setHasInteracted] = useState(false)
 
     // Handle user interaction to enable audio if autoplay is blocked
@@ -18,8 +18,8 @@ export default function BackgroundMusic() {
         const handleInteraction = () => {
             if (!hasInteracted) {
                 setHasInteracted(true)
-                // If it was paused purely due to lack of interaction, try to play
-                if (!playing) setPlaying(true)
+                setMuted(false) // Unmute on first interaction
+                setPlaying(true) // Ensure playing
             }
         }
 
@@ -29,10 +29,14 @@ export default function BackgroundMusic() {
         return () => {
             events.forEach(event => window.removeEventListener(event, handleInteraction))
         }
-    }, [hasInteracted, playing])
+    }, [hasInteracted])
 
     const togglePlay = () => {
         setPlaying(!playing)
+        if (!hasInteracted) {
+            setHasInteracted(true)
+            setMuted(false)
+        }
     }
 
     return (
@@ -56,7 +60,7 @@ export default function BackgroundMusic() {
 
             <button
                 onClick={togglePlay}
-                className="fixed bottom-4 right-4 z-50 bg-saffron-600 hover:bg-saffron-700 text-white p-3 rounded-full shadow-lg transition-transform hover:scale-110 flex items-center justify-center animate-bounce-slow"
+                className={`fixed bottom-4 right-4 z-50 bg-saffron-600 hover:bg-saffron-700 text-white p-3 rounded-full shadow-lg transition-transform hover:scale-110 flex items-center justify-center ${!playing ? 'animate-pulse' : ''}`}
                 aria-label={playing ? "Pause Music" : "Play Music"}
                 title={playing ? "Pause Music" : "Play Music"}
             >
