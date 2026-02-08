@@ -8,7 +8,7 @@ export default function Map() {
         <div className="max-w-6xl mx-auto">
           <div className="rounded-xl overflow-hidden shadow-2xl" style={{ aspectRatio: '4/3' }}>
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d486.25982721681834!2d77.6447664381509!3d12.838196179772005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae6bbde1870873%3A0xf281a907395bfa0e!2sSri%20Sathya%20Sai%20Seva%20Samiti%20Electronic%20City!5e0!3m2!1sen!2sin!4v1770358418280!5m2!1sen!2sin"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d242.87041654512828!2d77.79045167661567!3d13.10383225790908!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae0517e6ad26e9%3A0x8afed6807b56ccc2!2sShri%20Shirdi%20Sai%20Baba%20Temple!5e0!3m2!1sen!2sin!4v1770495698426!5m2!1sen!2sin"
               width="100%"
               height="100%"
               style={{ border: 0 }}

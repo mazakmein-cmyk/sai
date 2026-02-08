@@ -1,15 +1,34 @@
 'use client'
 
-import { HiBanknotes, HiDocumentText, HiCheckCircle } from 'react-icons/hi2'
+import { useState } from 'react'
+import { HiBanknotes, HiCheckCircle } from 'react-icons/hi2'
+import { FiCopy, FiCheck } from 'react-icons/fi'
 import { SITE_CONFIG } from '@/lib/constants'
 
 export default function DonationPage() {
   const bankDetails = SITE_CONFIG.bankDetails
+  const [copiedField, setCopiedField] = useState<string | null>(null)
 
-  const copyToClipboard = (text: string) => {
+  const copyToClipboard = (text: string, field: string) => {
     navigator.clipboard.writeText(text)
-    alert(`Copied to clipboard: ${text}`)
+    setCopiedField(field)
+    setTimeout(() => setCopiedField(null), 2000)
   }
+
+  const CopyButton = ({ text, field }: { text: string; field: string }) => (
+    <button
+      onClick={() => copyToClipboard(text, field)}
+      className="ml-4 text-gray-400 hover:text-saffron-600 transition-colors p-2 hover:bg-saffron-50 rounded-lg"
+      aria-label={`Copy ${field}`}
+      title="Copy to clipboard"
+    >
+      {copiedField === field ? (
+        <FiCheck className="w-6 h-6 text-green-500" />
+      ) : (
+        <FiCopy className="w-6 h-6" />
+      )}
+    </button>
+  )
 
   return (
     <div className="pt-24 pb-16">
@@ -32,11 +51,11 @@ export default function DonationPage() {
               <div className="flex items-center justify-center mb-6">
                 <HiBanknotes className="w-16 h-16 text-saffron-600" />
               </div>
-              
+
               <p className="text-center text-gray-700 text-lg mb-8">
                 <strong>Fund Transfer / NEFT / RTGS / IMPS / Quick Pay</strong>
               </p>
-              
+
               <div className="space-y-4">
                 <div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex items-center justify-between">
@@ -44,65 +63,37 @@ export default function DonationPage() {
                       <p className="text-sm text-gray-600 mb-2 font-medium">Account Name</p>
                       <p className="font-semibold text-gray-900 text-lg">{bankDetails.accountName}</p>
                     </div>
-                    <button
-                      onClick={() => copyToClipboard(bankDetails.accountName)}
-                      className="ml-4 text-saffron-600 hover:text-saffron-700 transition-colors p-2 hover:bg-saffron-50 rounded-lg"
-                      aria-label="Copy account name"
-                      title="Copy to clipboard"
-                    >
-                      <HiDocumentText className="w-6 h-6" />
-                    </button>
+                    <CopyButton text={bankDetails.accountName} field="accountName" />
                   </div>
                 </div>
-                
+
                 <div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <p className="text-sm text-gray-600 mb-2 font-medium">Account Number</p>
                       <p className="font-semibold text-gray-900 font-mono text-lg">{bankDetails.accountNumber}</p>
                     </div>
-                    <button
-                      onClick={() => copyToClipboard(bankDetails.accountNumber)}
-                      className="ml-4 text-saffron-600 hover:text-saffron-700 transition-colors p-2 hover:bg-saffron-50 rounded-lg"
-                      aria-label="Copy account number"
-                      title="Copy to clipboard"
-                    >
-                      <HiDocumentText className="w-6 h-6" />
-                    </button>
+                    <CopyButton text={bankDetails.accountNumber} field="accountNumber" />
                   </div>
                 </div>
-                
+
                 <div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <p className="text-sm text-gray-600 mb-2 font-medium">IFSC Code</p>
                       <p className="font-semibold text-gray-900 font-mono text-lg">{bankDetails.ifscCode}</p>
                     </div>
-                    <button
-                      onClick={() => copyToClipboard(bankDetails.ifscCode)}
-                      className="ml-4 text-saffron-600 hover:text-saffron-700 transition-colors p-2 hover:bg-saffron-50 rounded-lg"
-                      aria-label="Copy IFSC code"
-                      title="Copy to clipboard"
-                    >
-                      <HiDocumentText className="w-6 h-6" />
-                    </button>
+                    <CopyButton text={bankDetails.ifscCode} field="ifscCode" />
                   </div>
                 </div>
-                
+
                 <div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <p className="text-sm text-gray-600 mb-2 font-medium">Bank & Branch</p>
                       <p className="font-semibold text-gray-900 text-lg">{bankDetails.bank}</p>
                     </div>
-                    <button
-                      onClick={() => copyToClipboard(bankDetails.bank)}
-                      className="ml-4 text-saffron-600 hover:text-saffron-700 transition-colors p-2 hover:bg-saffron-50 rounded-lg"
-                      aria-label="Copy bank name"
-                      title="Copy to clipboard"
-                    >
-                      <HiDocumentText className="w-6 h-6" />
-                    </button>
+                    <CopyButton text={bankDetails.bank} field="bank" />
                   </div>
                 </div>
               </div>

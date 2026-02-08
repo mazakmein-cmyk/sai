@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { HiLocationMarker, HiPhone, HiMail } from 'react-icons/hi'
 import { FaWhatsapp } from 'react-icons/fa'
 import { SITE_CONFIG } from '@/lib/constants'
+import Toast from './Toast'
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -14,11 +15,12 @@ export default function Contact() {
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showToast, setShowToast] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    
+
     // Here you would typically send the form data to your backend
     // For now, we'll just show an alert
     setTimeout(() => {
@@ -35,18 +37,28 @@ export default function Contact() {
     })
   }
 
+  const handleCopyPhone = () => {
+    navigator.clipboard.writeText('+919113931148')
+    setShowToast(true)
+  }
+
   return (
     <section id="contact" className="section-padding bg-gray-50">
+      <Toast
+        message="Phone number +91-9113931148 copied"
+        isVisible={showToast}
+        onClose={() => setShowToast(false)}
+      />
       <div className="container-custom">
         <h2 className="heading-secondary text-center mb-12">Contact Us</h2>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {/* Contact Form */}
-          <div className="bg-white rounded-xl shadow-lg p-8">
+          <div className="bg-white rounded-xl shadow-lg p-5 sm:p-8">
             <h3 className="text-xl font-semibold mb-6 text-gray-800">
               Please share your feedback
             </h3>
-            
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
@@ -62,7 +74,7 @@ export default function Contact() {
                   required
                 />
               </div>
-              
+
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                   Email <span className="text-red-500">*</span>
@@ -77,7 +89,7 @@ export default function Contact() {
                   required
                 />
               </div>
-              
+
               <div>
                 <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
                   Phone <span className="text-red-500">*</span>
@@ -92,7 +104,7 @@ export default function Contact() {
                   required
                 />
               </div>
-              
+
               <div>
                 <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
                   Message
@@ -106,7 +118,7 @@ export default function Contact() {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saffron-500 focus:border-transparent outline-none transition-all resize-none"
                 />
               </div>
-              
+
               <button
                 type="submit"
                 disabled={isSubmitting}
@@ -115,16 +127,16 @@ export default function Contact() {
                 {isSubmitting ? 'Sending...' : 'Send'}
               </button>
             </form>
-            
+
             <p className="mt-4 text-xs text-gray-500 text-center">
               This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply.
             </p>
           </div>
-          
+
           {/* Contact Information */}
           <div className="space-y-6">
             {/* Founder Info */}
-            <div className="bg-white rounded-xl shadow-lg p-8">
+            <div className="bg-white rounded-xl shadow-lg p-5 sm:p-8">
               <h3 className="text-xl font-semibold mb-4 text-gray-800">
                 Founder and Chairman of Shri Shirdi Sai Seva Trust
               </h3>
@@ -136,14 +148,25 @@ export default function Contact() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center space-x-2 text-green-600 hover:text-green-700 transition-colors"
+                aria-label="Message us on WhatsApp"
               >
                 <FaWhatsapp className="w-5 h-5" />
                 <span>Message us on WhatsApp</span>
               </a>
+              <div className="mt-3">
+                <button
+                  onClick={handleCopyPhone}
+                  className="inline-flex items-center space-x-2 text-gray-700 hover:text-saffron-600 transition-colors group"
+                  aria-label="Copy phone number"
+                >
+                  <HiPhone className="w-4 h-4 text-gray-500 group-hover:text-saffron-600" />
+                  <span>+91-9113931148</span>
+                </button>
+              </div>
             </div>
-            
+
             {/* Temple Location */}
-            <div className="bg-white rounded-xl shadow-lg p-8">
+            <div className="bg-white rounded-xl shadow-lg p-5 sm:p-8">
               <h3 className="text-xl font-semibold mb-4 text-gray-800">
                 Shri Shirdi Sai Baba Temple
               </h3>
@@ -158,7 +181,7 @@ export default function Contact() {
                   href="https://maps.google.com/?q=Kallahally,+Hoskote,+Bengaluru+Rural,+Karnataka+562114"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center space-x-2 text-saffron-600 hover:text-saffron-700 transition-colors"
+                  className="inline-flex items-center space-x-2 text-saffron-600 hover:text-saffron-700 transition-colors font-medium"
                 >
                   <span>Get directions</span>
                 </a>

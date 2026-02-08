@@ -133,27 +133,7 @@ export default function Gallery() {
     },
   ]
 
-  // Grid gallery images (for below carousel)
-  const gridImages = [
-    {
-      id: 1,
-      title: 'Entrance to the Temple premises',
-      src: '/images/temple-entrance.jpg',
-      alt: 'Temple Entrance',
-    },
-    {
-      id: 2,
-      title: 'Temple Garden',
-      src: '/images/temple-garden.jpg',
-      alt: 'Temple Garden',
-    },
-    {
-      id: 3,
-      title: 'Natural Surroundings',
-      src: '/images/temple-nature.jpg',
-      alt: 'Natural Surroundings',
-    },
-  ]
+
 
   return (
     <section id="gallery" className="section-padding bg-gray-50">
@@ -161,36 +141,13 @@ export default function Gallery() {
         <h2 className="heading-secondary text-center mb-8">
           Shri Shirdi Sai Baba Temple in Pictures
         </h2>
-        
+
         {/* Image Carousel */}
         <div className="mb-12">
           <ImageCarousel images={carouselImages} autoPlay={true} interval={4000} />
         </div>
-        
-        {/* Grid Gallery (Optional - can be removed if not needed) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-          {gridImages.map((image) => (
-            <div
-              key={image.id}
-              className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
-            >
-              <div className="aspect-w-16 aspect-h-12 bg-gray-200 h-64 flex items-center justify-center">
-                <div className="text-center p-4">
-                  <div className="w-full h-full bg-gradient-to-br from-saffron-100 to-saffron-200 rounded-lg flex items-center justify-center">
-                    <p className="text-gray-600 text-sm">
-                      {image.title}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="p-4">
-                <h3 className="font-semibold text-gray-800 text-center">
-                  {image.title}
-                </h3>
-              </div>
-            </div>
-          ))}
-        </div>
+
+
       </div>
     </section>
   )
