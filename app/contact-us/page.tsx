@@ -16,18 +16,35 @@ export default function ContactUsPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // Here you would typically send the form data to your backend
-    // For now, we'll just show an alert
-    setTimeout(() => {
-      alert('Thank you for your message! We will get back to you soon.')
-      setFormData({ name: '', email: '', phone: '', message: '' })
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (response.ok) {
+        setToastMessage('Message sent successfully!')
+        setShowToast(true)
+        setFormData({ name: '', email: '', phone: '', message: '' })
+      } else {
+        setToastMessage('Failed to send message. Please try again.')
+        setShowToast(true)
+      }
+    } catch (error) {
+      setToastMessage('An error occurred. Please try again.')
+      setShowToast(true)
+    } finally {
       setIsSubmitting(false)
-    }, 1000)
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -39,13 +56,14 @@ export default function ContactUsPage() {
 
   const handleCopyPhone = () => {
     navigator.clipboard.writeText('+919113931148')
+    setToastMessage('Phone number +91-9113931148 copied')
     setShowToast(true)
   }
 
   return (
     <div className="pt-24 pb-16">
       <Toast
-        message="Phone number +91-9113931148 copied"
+        message={toastMessage || "Phone number +91-9113931148 copied"}
         isVisible={showToast}
         onClose={() => setShowToast(false)}
       />
