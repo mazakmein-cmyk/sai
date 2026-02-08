@@ -25,6 +25,7 @@ export const SITE_CONFIG = {
   contact: {
     phone: '+919113931148',
     displayPhone: '+91-9113931148',
+    googleMaps: 'https://www.google.com/maps/dir/?api=1&destination=Shri+Shirdi+Sai+Baba+Temple,+Kallahally,+Karnataka',
   },
 } as const
 

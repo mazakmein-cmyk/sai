@@ -196,7 +196,7 @@ export default function Contact() {
                   </p>
                 </div>
                 <a
-                  href="https://maps.google.com/?q=Kallahally,+Hoskote,+Bengaluru+Rural,+Karnataka+562114"
+                  href={SITE_CONFIG.contact.googleMaps}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center space-x-2 text-saffron-600 hover:text-saffron-700 transition-colors font-medium"
