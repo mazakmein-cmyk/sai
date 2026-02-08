@@ -42,10 +42,11 @@ export default function BackgroundMusic() {
     return (
         <>
             {/* DEBUG MODE: Player visible to check if it loads */}
+            {/* DEBUG MODE: Player visible to check if it loads */}
             <div style={{ position: 'fixed', bottom: '80px', right: '20px', zIndex: 40, border: '2px solid red', background: 'black' }}>
                 <p className="text-white text-xs p-1">Debug: {playing ? 'Playing' : 'Paused'} | Muted: {muted ? 'Yes' : 'No'}</p>
                 <ReactPlayer
-                    url="https://www.youtube.com/watch?v=FetQQNJHngg"
+                    url="https://www.youtube.com/embed/FetQQNJHngg?si=JgDu4O1hkE8iKSDs"
                     playing={playing}
                     loop={true}
                     volume={0.5}
@@ -59,8 +60,18 @@ export default function BackgroundMusic() {
                     controls={true}
                     config={{
                         youtube: {
-                            playerVars: { showinfo: 1, autoplay: 1, playsinline: 1 }
+                            playerVars: {
+                                showinfo: 1,
+                                autoplay: 1,
+                                playsinline: 1,
+                                origin: typeof window !== 'undefined' ? window.location.origin : undefined
+                            }
                         }
+                    }}
+                    // Passing props to the internal iframe
+                    attributes={{
+                        allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
+                        allowFullScreen: true
                     }}
                 />
             </div>
