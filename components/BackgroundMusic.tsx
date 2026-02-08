@@ -27,24 +27,29 @@ export default function BackgroundMusic() {
             audio.play().catch(e => console.error("Initial play failed", e))
         }
 
-        // Global unlock listener (Unmute on first touch)
+        // Global unlock listener (Unmute on first interaction)
         const unlockAudio = () => {
             if (audio) {
                 audio.muted = false
                 setMuted(false)
+
+                // If paused, try to play. This is CRITICAL if autoplay blocked.
                 if (audio.paused) {
-                    audio.play().catch(e => console.error("Unlock play failed", e))
+                    audio.play().then(() => {
+                        setPlaying(true)
+                    }).catch(e => console.error("Unlock play failed", e))
                 }
             }
         }
 
+        // We use capture: true to catch events early
         const events = ['click', 'touchstart', 'scroll', 'keydown']
-        events.forEach(e => window.addEventListener(e, unlockAudio, { once: true }))
+        events.forEach(e => document.addEventListener(e, unlockAudio, { once: true, capture: true }))
 
         return () => {
             audio.removeEventListener('play', onPlay)
             audio.removeEventListener('pause', onPause)
-            events.forEach(e => window.removeEventListener(e, unlockAudio))
+            events.forEach(e => document.removeEventListener(e, unlockAudio, { capture: true }))
         }
     }, [])
 
