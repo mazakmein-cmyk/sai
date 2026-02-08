@@ -45,7 +45,7 @@ export default function BackgroundMusic() {
             <div style={{ position: 'fixed', bottom: '80px', right: '20px', zIndex: 40, border: '2px solid red', background: 'black' }}>
                 <p className="text-white text-xs p-1">Debug: {playing ? 'Playing' : 'Paused'} | Muted: {muted ? 'Yes' : 'No'}</p>
                 <ReactPlayer
-                    url="https://youtu.be/QKf_JPbN6Lw?si=O-4-_YhzwMMkczR0"
+                    url="https://youtu.be/FetQQNJHngg?si=THv4WsbCvQp-gbNo"
                     playing={playing}
                     loop={true}
                     volume={0.5}
