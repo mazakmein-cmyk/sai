@@ -27,17 +27,29 @@ export default function BackgroundMusic() {
             audio.play().catch(e => console.error("Initial play failed", e))
         }
 
-        // Global unlock listener (Unmute on first interaction)
+        // Global unlock listener
         const unlockAudio = () => {
             if (audio) {
+                // Try to unmute
                 audio.muted = false
                 setMuted(false)
 
-                // If paused, try to play. This is CRITICAL if autoplay blocked.
+                // If paused, try to play. 
                 if (audio.paused) {
-                    audio.play().then(() => {
-                        setPlaying(true)
-                    }).catch(e => console.error("Unlock play failed", e))
+                    const playPromise = audio.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            setPlaying(true)
+                        })
+                            .catch(error => {
+                                console.error("Unmuted play blocked:", error)
+                                // Auto-play policy blocked unmuted play. 
+                                // Fallback: Play Muted (so at least it plays)
+                                audio.muted = true
+                                setMuted(true)
+                                audio.play().then(() => setPlaying(true)).catch(e => console.error("Muted play also failed", e))
+                            });
+                    }
                 }
             }
         }
@@ -88,7 +100,8 @@ export default function BackgroundMusic() {
                     overflow: 'hidden',
                     clip: 'rect(0,0,0,0)',
                     border: 0,
-                    opacity: 0.01 // Sometimes 0 opacity is treated as hidden 
+                    // visibility: 'hidden' is safer than opacity for some browsers
+                    visibility: 'hidden'
                 }}
             />
 
