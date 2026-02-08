@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { HiMenu, HiX } from 'react-icons/hi'
+import { HiMenu, HiX, HiPhone } from 'react-icons/hi'
 import { FaWhatsapp } from 'react-icons/fa'
 import { NAV_ITEMS, SITE_CONFIG } from '@/lib/constants'
 
@@ -20,11 +20,10 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-white shadow-md'
-          : 'bg-white/95 backdrop-blur-sm'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
+        ? 'bg-white shadow-md'
+        : 'bg-white/95 backdrop-blur-sm'
+        }`}
     >
       <nav className="container-custom section-padding py-4">
         <div className="flex items-center justify-between">
@@ -55,6 +54,14 @@ export default function Header() {
             >
               <FaWhatsapp className="w-5 h-5" />
               <span>WhatsApp</span>
+            </a>
+            <a
+              href={`tel:${SITE_CONFIG.contact.phone}`}
+              className="flex items-center gap-2 text-gray-700 hover:text-saffron-600 font-medium transition-colors duration-200"
+              aria-label="Call us"
+            >
+              <HiPhone className="w-5 h-5" />
+              <span>{SITE_CONFIG.contact.displayPhone}</span>
             </a>
           </div>
 
@@ -96,6 +103,15 @@ export default function Header() {
               >
                 <FaWhatsapp className="w-5 h-5" />
                 <span>WhatsApp</span>
+              </a>
+              <a
+                href={`tel:${SITE_CONFIG.contact.phone}`}
+                className="flex items-center gap-2 text-gray-700 hover:text-saffron-600 font-medium transition-colors duration-200 pt-2"
+                aria-label="Call us"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <HiPhone className="w-5 h-5" />
+                <span>{SITE_CONFIG.contact.displayPhone}</span>
               </a>
             </div>
           </div>

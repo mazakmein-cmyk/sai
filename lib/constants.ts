@@ -22,6 +22,10 @@ export const SITE_CONFIG = {
   whatsapp: {
     url: 'https://api.whatsapp.com/send/?phone=919113931148&text&type=phone_number&app_absent=0',
   },
+  contact: {
+    phone: '+919113931148',
+    displayPhone: '+91-9113931148',
+  },
 } as const
 
 export const NAV_ITEMS = [
