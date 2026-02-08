@@ -9,48 +9,36 @@ export default function BackgroundMusic() {
     const audioRef = useRef<HTMLAudioElement | null>(null)
 
     useEffect(() => {
+        // We rely on the <audio autoPlay muted> tags for the initial start.
+        // This is the most reliable way in 2024.
+        // We simply check if it started and update state.
         const audio = audioRef.current
         if (!audio) return
 
-        // Volume set to 50%
-        audio.volume = 0.5
+        const onPlay = () => setPlaying(true)
+        const onPause = () => setPlaying(false)
 
-        // Use a small timeout to let the DOM settle before trying to manipulate play state programmatically
-        // although autoPlay attribute should handle the initial start
-        const attemptUnmute = async () => {
-            // Try Unmuted First
-            audio.muted = false
-            try {
-                await audio.play()
-                setPlaying(true)
-                setMuted(false)
-                console.log("Success: Audio playing unmuted.")
-            } catch (error) {
-                // If blocked, fallback to Muted
-                console.log("Unmuted autoplay blocked, falling back to muted.")
+        audio.addEventListener('play', onPlay)
+        audio.addEventListener('pause', onPause)
+
+        // Attempt to verify playback status after a brief moment
+        const checkPlayback = setTimeout(() => {
+            if (audio.paused) {
+                // If it failed to autoplay, try one last gentle nudge (muted)
                 audio.muted = true
-                try {
-                    await audio.play()
-                    setPlaying(true)
-                    setMuted(true)
-                    console.log("Success: Audio playing muted.")
-                } catch (err2) {
-                    console.error("Autoplay completely blocked:", err2)
-                    setPlaying(false)
-                }
+                audio.play().catch(e => console.warn("Autoplay blocked:", e))
             }
-        }
+        }, 1000)
 
-        attemptUnmute()
-
-        // Global unlock listener
+        // Global unlock listener (Unmute on first touch)
         const unlockAudio = () => {
             if (audio) {
                 audio.muted = false
-                audio.play().then(() => {
-                    setPlaying(true)
-                    setMuted(false)
-                }).catch(e => console.error("Unlock failed", e))
+                setMuted(false)
+                // If it wasn't playing (e.g. strict block), play now
+                if (audio.paused) {
+                    audio.play().catch(e => console.error("Unlock play failed", e))
+                }
             }
         }
 
@@ -58,7 +46,10 @@ export default function BackgroundMusic() {
         events.forEach(e => window.addEventListener(e, unlockAudio, { once: true }))
 
         return () => {
+            audio.removeEventListener('play', onPlay)
+            audio.removeEventListener('pause', onPause)
             events.forEach(e => window.removeEventListener(e, unlockAudio))
+            clearTimeout(checkPlayback)
         }
     }, [])
 
@@ -68,17 +59,19 @@ export default function BackgroundMusic() {
 
         if (playing) {
             audio.pause()
-            setPlaying(false)
         } else {
-            audio.muted = false // Force unmute on manual play
+            audio.muted = false // Force unmute if user manually clicks play
             setMuted(false)
             audio.play().catch(e => console.error("Manual play failed:", e))
-            setPlaying(true)
         }
     }
 
     return (
         <>
+            {/* 
+                Hidden with opacity/size instead of display:none to prevent browser throttling.
+                autoPlay + muted + loop is the gold standard for background audio.
+            */}
             <audio
                 ref={audioRef}
                 src="/background-music.mp3"
@@ -86,7 +79,17 @@ export default function BackgroundMusic() {
                 autoPlay
                 muted
                 playsInline
-                className="hidden"
+                style={{
+                    position: 'absolute',
+                    width: '1px',
+                    height: '1px',
+                    padding: 0,
+                    margin: '-1px',
+                    overflow: 'hidden',
+                    clip: 'rect(0,0,0,0)',
+                    border: 0,
+                    opacity: 0.01 // Sometimes 0 opacity is treated as hidden 
+                }}
             />
 
             <button
