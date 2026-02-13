@@ -27,9 +27,7 @@ export default function Footer() {
           <p className="text-sm">
             Copyright © {currentYear} Shri Shirdi Sai Baba Temple - All Rights Reserved.
           </p>
-          <p className="text-xs text-gray-500">
-            Made with <HiHeart className="inline w-4 h-4 text-red-500" /> for Shri Shirdi Sai Seva Trust
-          </p>
+
           <div className="flex justify-center items-center gap-4 flex-wrap text-sm pt-4">
             <a
               href={SITE_CONFIG.whatsapp.url}

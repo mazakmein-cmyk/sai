@@ -7,129 +7,128 @@ export default function Gallery() {
   const carouselImages = [
     {
       id: 1,
-      src: '/images/IMG20260101132437.jpg',
-      alt: 'Shri Shirdi Sai Baba Temple - Image 1',
-      title: 'Temple View 1',
+      src: '/images/1.jpeg',
+      alt: 'Shri Shirdi Sai Baba Temple',
     },
     {
       id: 2,
-      src: '/images/IMG20260101132442.jpg',
-      alt: 'Shri Shirdi Sai Baba Temple - Image 2',
-      title: 'Temple View 2',
+      src: '/images/6.jpeg',
+      alt: 'Shri Shirdi Sai Baba Temple',
     },
     {
       id: 3,
-      src: '/images/IMG20260101132452.jpg',
-      alt: 'Shri Shirdi Sai Baba Temple - Image 3',
-      title: 'Temple View 3',
+      src: '/images/8.jpeg',
+      alt: 'Shri Shirdi Sai Baba Temple',
     },
     {
       id: 4,
-      src: '/images/IMG20260101132503.jpg',
-      alt: 'Shri Shirdi Sai Baba Temple - Image 4',
-      title: 'Temple View 4',
+      src: '/images/9.jpeg',
+      alt: 'Shri Shirdi Sai Baba Temple',
     },
     {
       id: 5,
-      src: '/images/IMG20260101132511.jpg',
-      alt: 'Shri Shirdi Sai Baba Temple - Image 5',
-      title: 'Temple View 5',
+      src: '/images/IMG20260101132437.jpg',
+      alt: 'Shri Shirdi Sai Baba Temple',
     },
     {
       id: 6,
-      src: '/images/IMG20260101132524.jpg',
-      alt: 'Shri Shirdi Sai Baba Temple - Image 6',
-      title: 'Temple View 6',
+      src: '/images/IMG20260101132442.jpg',
+      alt: 'Shri Shirdi Sai Baba Temple',
     },
     {
       id: 7,
-      src: '/images/IMG20260101132636.jpg',
-      alt: 'Shri Shirdi Sai Baba Temple - Image 7',
-      title: 'Temple View 7',
+      src: '/images/IMG20260101132452.jpg',
+      alt: 'Shri Shirdi Sai Baba Temple',
     },
     {
       id: 8,
-      src: '/images/IMG20260101132704.jpg',
-      alt: 'Shri Shirdi Sai Baba Temple - Image 8',
-      title: 'Temple View 8',
+      src: '/images/IMG20260101132503.jpg',
+      alt: 'Shri Shirdi Sai Baba Temple',
     },
     {
       id: 9,
-      src: '/images/IMG20260101140557.jpg',
-      alt: 'Shri Shirdi Sai Baba Temple - Image 9',
-      title: 'Temple View 9',
+      src: '/images/IMG20260101132511.jpg',
+      alt: 'Shri Shirdi Sai Baba Temple',
     },
     {
       id: 10,
-      src: '/images/IMG20260101140601.jpg',
-      alt: 'Shri Shirdi Sai Baba Temple - Image 10',
-      title: 'Temple View 10',
+      src: '/images/IMG20260101132524.jpg',
+      alt: 'Shri Shirdi Sai Baba Temple',
     },
     {
       id: 11,
-      src: '/images/IMG20260101140618.jpg',
-      alt: 'Shri Shirdi Sai Baba Temple - Image 11',
-      title: 'Temple View 11',
+      src: '/images/IMG20260101132636.jpg',
+      alt: 'Shri Shirdi Sai Baba Temple',
     },
     {
       id: 12,
-      src: '/images/IMG20260101140625.jpg',
-      alt: 'Shri Shirdi Sai Baba Temple - Image 12',
-      title: 'Temple View 12',
+      src: '/images/IMG20260101132704.jpg',
+      alt: 'Shri Shirdi Sai Baba Temple',
     },
     {
       id: 13,
-      src: '/images/IMG20260101140643.jpg',
-      alt: 'Shri Shirdi Sai Baba Temple - Image 13',
-      title: 'Temple View 13',
+      src: '/images/IMG20260101140557.jpg',
+      alt: 'Shri Shirdi Sai Baba Temple',
     },
     {
       id: 14,
-      src: '/images/IMG20260101140653.jpg',
-      alt: 'Shri Shirdi Sai Baba Temple - Image 14',
-      title: 'Temple View 14',
+      src: '/images/IMG20260101140601.jpg',
+      alt: 'Shri Shirdi Sai Baba Temple',
     },
     {
       id: 15,
-      src: '/images/IMG20260101140705.jpg',
-      alt: 'Shri Shirdi Sai Baba Temple - Image 15',
-      title: 'Temple View 15',
+      src: '/images/IMG20260101140618.jpg',
+      alt: 'Shri Shirdi Sai Baba Temple',
     },
     {
       id: 16,
-      src: '/images/IMG20260101140716.jpg',
-      alt: 'Shri Shirdi Sai Baba Temple - Image 16',
-      title: 'Temple View 16',
+      src: '/images/IMG20260101140625.jpg',
+      alt: 'Shri Shirdi Sai Baba Temple',
     },
     {
       id: 17,
-      src: '/images/IMG20260101140723.jpg',
-      alt: 'Shri Shirdi Sai Baba Temple - Image 17',
-      title: 'Temple View 17',
+      src: '/images/IMG20260101140643.jpg',
+      alt: 'Shri Shirdi Sai Baba Temple',
     },
     {
       id: 18,
-      src: '/images/IMG20260101140730.jpg',
-      alt: 'Shri Shirdi Sai Baba Temple - Image 18',
-      title: 'Temple View 18',
+      src: '/images/IMG20260101140653.jpg',
+      alt: 'Shri Shirdi Sai Baba Temple',
     },
     {
       id: 19,
-      src: '/images/IMG20260101140736.jpg',
-      alt: 'Shri Shirdi Sai Baba Temple - Image 19',
-      title: 'Temple View 19',
+      src: '/images/IMG20260101140705.jpg',
+      alt: 'Shri Shirdi Sai Baba Temple',
     },
     {
       id: 20,
-      src: '/images/IMG20260101140741.jpg',
-      alt: 'Shri Shirdi Sai Baba Temple - Image 20',
-      title: 'Temple View 20',
+      src: '/images/IMG20260101140716.jpg',
+      alt: 'Shri Shirdi Sai Baba Temple',
     },
     {
       id: 21,
+      src: '/images/IMG20260101140723.jpg',
+      alt: 'Shri Shirdi Sai Baba Temple',
+    },
+    {
+      id: 22,
+      src: '/images/IMG20260101140730.jpg',
+      alt: 'Shri Shirdi Sai Baba Temple',
+    },
+    {
+      id: 23,
+      src: '/images/IMG20260101140736.jpg',
+      alt: 'Shri Shirdi Sai Baba Temple',
+    },
+    {
+      id: 24,
+      src: '/images/IMG20260101140741.jpg',
+      alt: 'Shri Shirdi Sai Baba Temple',
+    },
+    {
+      id: 25,
       src: '/images/IMG20260101140753.jpg',
-      alt: 'Shri Shirdi Sai Baba Temple - Image 21',
-      title: 'Temple View 21',
+      alt: 'Shri Shirdi Sai Baba Temple',
     },
   ]
 
@@ -144,7 +143,15 @@ export default function Gallery() {
 
         {/* Image Carousel */}
         <div className="mb-12">
-          <ImageCarousel images={carouselImages} autoPlay={true} interval={4000} />
+          <ImageCarousel
+            images={carouselImages}
+            autoPlay={true}
+            interval={4000}
+            tabs={[
+              { label: '🙏 Divine Sanctum', targetIndex: 0 },
+              { label: '🏛️ Sacred Grounds', targetIndex: 4 },
+            ]}
+          />
         </div>
 
 

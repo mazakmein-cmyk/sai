@@ -1,14 +1,24 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { usePathname } from 'next/navigation'
 import { FaMusic, FaPause, FaHandsPraying } from 'react-icons/fa6'
 
 export default function BackgroundMusic() {
+    const pathname = usePathname()
     const [playing, setPlaying] = useState(false)
     const [muted, setMuted] = useState(true)
-    const [showSplash, setShowSplash] = useState(true)
+    const [showSplash, setShowSplash] = useState(false)
     const [fadeOut, setFadeOut] = useState(false)
     const audioRef = useRef<HTMLAudioElement | null>(null)
+
+    // Only show splash on home page and only once per session
+    useEffect(() => {
+        const alreadyShown = sessionStorage.getItem('splashShown')
+        if (pathname === '/' && !alreadyShown) {
+            setShowSplash(true)
+        }
+    }, [pathname])
 
     useEffect(() => {
         const audio = audioRef.current
@@ -38,7 +48,10 @@ export default function BackgroundMusic() {
         const audio = audioRef.current
         if (audio) {
             setFadeOut(true)
-            setTimeout(() => setShowSplash(false), 500) // Allow fade out animation
+            setTimeout(() => {
+                setShowSplash(false)
+                sessionStorage.setItem('splashShown', 'true')
+            }, 500) // Allow fade out animation
 
             // USER INTERACTION -> UNMUTE & PLAY
             audio.muted = false
@@ -49,7 +62,10 @@ export default function BackgroundMusic() {
 
     const handleAutoDismiss = () => {
         setFadeOut(true)
-        setTimeout(() => setShowSplash(false), 500)
+        setTimeout(() => {
+            setShowSplash(false)
+            sessionStorage.setItem('splashShown', 'true')
+        }, 500)
 
         // NO INTERACTION -> PLAY MUTED (Fallback)
         const audio = audioRef.current

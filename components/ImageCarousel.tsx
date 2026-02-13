@@ -11,13 +11,20 @@ interface CarouselImage {
   title?: string
 }
 
+interface CarouselTab {
+  label: string
+  targetIndex: number
+}
+
 interface ImageCarouselProps {
   images: CarouselImage[]
   autoPlay?: boolean
   interval?: number
+  tabs?: CarouselTab[]
 }
 
-export default function ImageCarousel({ images, autoPlay = true, interval = 4000 }: ImageCarouselProps) {
+export default function ImageCarousel({ images, autoPlay = true, interval = 4000, tabs }: ImageCarouselProps) {
+  const [activeTab, setActiveTab] = useState(0)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
   const [imageErrors, setImageErrors] = useState<Set<number>>(new Set())
@@ -50,12 +57,35 @@ export default function ImageCarousel({ images, autoPlay = true, interval = 4000
 
   if (images.length === 0) return null
 
+  const handleTabClick = (tabIndex: number, targetIndex: number) => {
+    setActiveTab(tabIndex)
+    setCurrentIndex(targetIndex)
+  }
+
   return (
     <div
       className="relative w-full max-w-6xl mx-auto"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
+      {/* Category Tabs */}
+      {tabs && tabs.length > 0 && (
+        <div className="flex justify-center mb-4 gap-2">
+          {tabs.map((tab, index) => (
+            <button
+              key={index}
+              onClick={() => handleTabClick(index, tab.targetIndex)}
+              className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${activeTab === index
+                  ? 'bg-saffron-600 text-white shadow-lg shadow-saffron-600/30 scale-105'
+                  : 'bg-white text-gray-700 border border-gray-200 hover:border-saffron-400 hover:text-saffron-600 hover:shadow-md'
+                }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Main Carousel Container */}
       <div className="relative overflow-hidden rounded-xl shadow-2xl bg-gray-900" style={{ aspectRatio: '16/9' }}>
         {/* Images */}
@@ -137,11 +167,10 @@ export default function ImageCarousel({ images, autoPlay = true, interval = 4000
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  index === currentIndex
+                className={`h-2 rounded-full transition-all duration-300 ${index === currentIndex
                     ? 'w-8 bg-white'
                     : 'w-2 bg-white/50 hover:bg-white/75'
-                }`}
+                  }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
             ))}
